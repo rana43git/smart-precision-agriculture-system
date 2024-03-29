@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  /* CSS for animating the text */
+  #percentageText {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+</style>
+</head>
+<body>
+    <!--Progressbar Starts from here-->
+    <svg width="100px" height="100px">
+      <circle
+        style="
+          fill: none;
+          stroke: #ccc;
+          stroke-width: 8;
+        "
+        cx="50"
+        cy="50"
+        r="40"
+      />
+      <circle
+        id="progressCircle"
+        style="
+          fill: none;
+          stroke: #3CB043;
+          stroke-width: 8;
+          stroke-linecap: round;
+          stroke-dasharray: 0 100;
+          transition: stroke-dasharray 0.8s ease-in-out;
+          transform: rotate(-90deg);
+          transform-origin: center;
+        "
+        cx="50"
+        cy="50"
+        r="40"
+      />
+      <text
+        id="percentageText"
+        x="50%"
+        y="50%"
+        text-anchor="middle"
+        dominant-baseline="middle"
+        font-size="20"
+        fill="#3CB043"
+      >
+        0%
+      </text>
+    </svg>
+    <!--Progressbar Ends here-->
+
+  <script>
+    //Progressbar scripts starts from here
+    function animateProgressBar(desiredProgress) {
+      const progressCircle = document.getElementById("progressCircle");
+      const percentageText = document.getElementById("percentageText");
+      const animationDuration = 800; // Animation duration in milliseconds
+
+      const circumference = 2 * Math.PI * 40; // Circumference of the circle (2πr)
+      const dashOffset = circumference - (circumference * desiredProgress) / 100;
+
+      // Set the initial state (0%)
+      progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+      progressCircle.style.strokeDashoffset = circumference;
+
+      // Animate the progress
+      progressCircle.style.transition = `stroke-dashoffset ${animationDuration / 1000}s ease-in-out`;
+      setTimeout(() => {
+        progressCircle.style.strokeDashoffset = dashOffset;
+
+        // Animate the text
+        percentageText.style.opacity = 1;
+        percentageText.style.transition = "opacity 0.5s ease-in-out";
+        percentageText.textContent = `${desiredProgress}%`;
+      }, 0);
+    }
+    // Example usage:
+    animateProgressBar(40); // Call the function with the desired progress percentage
+    //Progressbar ends here
+  </script>
+</body>
+</html>

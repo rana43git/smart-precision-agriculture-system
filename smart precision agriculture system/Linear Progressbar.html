@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .myProgressValue {
+            width: fit-content;
+            margin: auto;
+            color: #20a9ff;
+        }
+
+        #myProgress {
+            margin: 10px auto;
+            width: 200px;
+            background-color: #ddd;
+            border-radius: 10px;
+        }
+
+        #myBar {
+            width: 0%;
+            height: 10px;
+            background-color: #20a9ff;
+            padding-right: 10px;
+            border-radius: 10px;
+        }
+
+        /* Add this CSS rule to hide the progress bar color when the progress is 0% */
+        #myBar[style*="width: 0%"] {
+            background-color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <p class="myProgressValue">Moisture <span id="myProgressValue">0%</span></p>
+
+    <div id="myProgress">
+        <div id="myBar"></div>
+    </div>
+
+    <script>
+        // Define a function to update the progress bar
+        function updateProgressBar(value) {
+            const myBar = document.getElementById('myBar');
+            const myProgressValue = document.getElementById('myProgressValue');
+
+            // Ensure the value is between 0 and 100
+            value = Math.max(0, Math.min(100, value));
+
+            myBar.style.width = value + '%';
+            myProgressValue.innerHTML = value + '%';
+        }
+
+        // Initialize the progress bar with a value of 0%
+        updateProgressBar(60);
+
+        // You can use this function to change the value of the progress bar
+        // For example:
+        // updateProgressBar(50); // Sets the progress to 50%
+        // updateProgressBar(75); // Sets the progress to 75%
+    </script>
+</body>
+
+</html>

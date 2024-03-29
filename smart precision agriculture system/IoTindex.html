@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
+  <style>
+    html {
+      font-family: Arial;
+      display: inline-block;
+      margin: 0px auto;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.0rem;
+    }
+
+    p {
+      font-size: 2.0rem;
+    }
+
+    .units {
+      font-size: 1.2rem;
+    }
+
+    .dht-labels {
+      font-size: 1.5rem;
+      vertical-align: middle;
+      padding-bottom: 15px;
+    }
+
+    /*--Moitsure Progressbar Starts from here--*/
+    * {
+            box-sizing: border-box;
+        }
+
+        .myProgressValue {
+          font-size: 1.6rem;
+            width: fit-content;
+            margin: auto;
+            color: #20a9ff;
+        }
+
+        #myProgress {
+            margin: 10px auto;
+            width: 200px;
+            background-color: #ddd;
+            border-radius: 10px;
+        }
+
+        #myBar {
+            width: 0%;
+            height: 10px;
+            background-color: #20a9ff;
+            padding-right: 10px;
+            border-radius: 10px;
+        }
+
+        /* Add this CSS rule to hide the progress bar color when the progress is 0% */
+        #myBar[style*="width: 0%"] {
+            background-color: transparent;
+        }
+    /*--Moitsure Progressbar Ends here--*/
+  </style>
+</head>
+
+<body>
+  <h1>Smart Precision Agriculture System</h1>
+  <p style="font-size: 1.5rem;">
+    <!--Progressbar Starts from here-->
+    <svg width="100px" height="100px">
+      <circle style="
+          fill: none;
+          stroke: #cccccc;
+          stroke-width: 8;
+        " cx="50" cy="50" r="40" />
+      <circle id="progressCircle" style="
+          fill: none;
+          stroke: #3CB043;
+          stroke-width: 8;
+          stroke-linecap: round;
+          stroke-dasharray: 0 100;
+          transition: stroke-dasharray 0.8s ease-in-out;
+          transform: rotate(-90deg);
+          transform-origin: center;
+        " cx="50" cy="50" r="40" />
+      <text id="percentageText" x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-size="20"
+        fill="#3CB043">
+        0%
+      </text>
+    </svg>
+    <br><text><i class="fa fa-tree" style="font-size:2.5rem;color:#3CB043"></i> Plant Growth</text>
+    <!--Progressbar Ends here-->
+    <!--Moitsure Progressbar Starts from here-->
+  <div id="myProgress">
+    <div id="myBar"></div>
+  </div>
+  <p class="myProgressValue">Moisture : <span id="myProgressValue">0%</span></p>
+  <!--Moitsure Progressbar Ends here-->
+  </P>
+  <p>
+    <i class="fa fa-thermometer-half" style="font-size:3.0rem;color:#ff0000;"></i>
+    <span class="dht-labels">Temperature : </span>
+    <span id="TemperatureValue">0</span>
+    <sup class="units">&deg;C</sup>
+  </p>
+  <p>
+    <i class="fa fa-tint fa-lg" style="color: #0096FF;"></i>
+    <span class="dht-labels">Humidity : </span>
+    <span id="HumidityValue">0</span>
+    <sup class="units">%</sup>
+  </p>
+  <p>
+    <i class="far fa-clock" style="font-size:1.0rem;color:#EC5800;"></i>
+    <span style="font-size:1.0rem;"><b>Time: </b></span>
+    <span id="time" style="font-size:1.0rem;"></span>
+    <br>
+    <i class="far fa-calendar-alt" style="font-size:1.0rem;color:#93C572" ;></i>
+    <span style="font-size:1.0rem;"><b>Date: </b></span>
+    <span id="date" style="font-size:1.0rem;"></span>
+  </P>
+  <script>
+
+
+    //Growth Progressbar scripts starts from here
+    function setProgressBar(progress) {
+      const progressCircle = document.getElementById("progressCircle");
+      const percentageText = document.getElementById("percentageText");
+
+      const circumference = 2 * Math.PI * 40; // Circumference of the circle (2πr)
+      const dashOffset = circumference - (circumference * progress) / 100;
+
+      // Set the progress without animation
+      progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+      progressCircle.style.strokeDashoffset = dashOffset;
+
+      // Set the text without animation
+      percentageText.style.opacity = 1;
+      percentageText.textContent = `${progress}%`;
+    }
+
+    // Example usage:
+    setProgressBar(60); // Set the progress directly without animation
+    //Growth Progressbar ends here
+
+
+    /*--Moitsure Progressbar Starts from here--*/
+    function updateProgressBar(value) {
+            const myBar = document.getElementById('myBar');
+            const myProgressValue = document.getElementById('myProgressValue');
+
+            // Ensure the value is between 0 and 100
+            value = Math.max(0, Math.min(100, value));
+
+            myBar.style.width = value + '%';
+            myProgressValue.innerHTML = value + '%';
+        }
+        // Initialize the progress bar with a value of 0%
+        updateProgressBar(50);
+    /*--Moitsure Progressbar Ends here--*/
+
+
+    setInterval(function () {
+      // Call a function repetatively with 2 Second interval
+      getTemperatureData();
+      getHumidityData();
+    }, 2000);
+
+    setInterval(function () {
+      // Call a function repetatively with 1 Second interval
+      Time_Date();
+    }, 1000);
+
+    function getTemperatureData() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("TemperatureValue").innerHTML =
+            this.responseText;
+        }
+      };
+      xhttp.open("GET", "readTemperature", true);
+      xhttp.send();
+    }
+
+    function getHumidityData() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("HumidityValue").innerHTML =
+            this.responseText;
+        }
+      };
+      xhttp.open("GET", "readHumidity", true);
+      xhttp.send();
+    }
+    function Time_Date() {
+      /*var t = new Date();
+      document.getElementById("time").innerHTML = t.toLocaleTimeString();*/
+      //
+      var currentTime = new Date();
+      var hours = currentTime.getHours();
+      var minutes = currentTime.getMinutes();
+      var seconds = currentTime.getSeconds();
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+
+      // Convert hours to 12-hour format
+      hours = hours % 12;
+      hours = hours ? hours : 12; // If hours is 0, set it to 12
+
+      // Add leading zero to minutes and seconds if needed
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      seconds = seconds < 10 ? '0' + seconds : seconds;
+
+      // Update the time in the HTML element
+      var timeString = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+      document.getElementById('time').innerHTML = timeString;
+      //
+      var d = new Date();
+      const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      document.getElementById("date").innerHTML = dayNames[d.getDay()] + ", " + d.getDate() + " " + monthNames[d.getMonth()] + ", " + d.getFullYear();
+    }
+  </script>
+</body>
+
+</html>
